@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@paymoapp/active-window": "^2.0.6",
+    "express": "^4.19.2"
+  }
+}
