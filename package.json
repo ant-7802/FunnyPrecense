@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@paymoapp/active-window": "^2.0.6",
+    "express": "^4.19.2",
     "jimp": "^0.22.12",
     "node-scp": "^0.0.23"
   }
