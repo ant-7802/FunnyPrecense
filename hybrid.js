@@ -21,11 +21,11 @@ async function main() {
         const icon = (await Jimp.read(Buffer.from(status.icon.split(",")[1],"base64url"))).resize(64,64);    
         Jimp.read("background.png", async (err, background) => {
             if (err) throw err;
-            await background.composite(profile, 50, 30);
+            await background.composite(profile, 30, 30);
             await background.print(fontsans64, 325, 30, `${login}`);
-            await background.print(fontsans32, 325, 120, status.title);
-            await background.composite(greencircle,150,140);
-            await background.composite(icon,240,107);
+            await background.print(fontsans32, 250, 120, status.title);
+            await background.composite(greencircle,130,140);
+            await background.composite(icon,177,107);
             await background.write("img.png");
         });
     }, 10000);
