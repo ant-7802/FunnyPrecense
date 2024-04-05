@@ -16,17 +16,20 @@ async function main() {
     const greencircle = (await Jimp.read(`assets/greencircle.png`)).resize(40,40);
     profile.resize(150, 150);
     profile.circle();
-    var status = await ActiveWindow.getActiveWindow();
-    const icon = (await Jimp.read(Buffer.from(status.icon.split(",")[1],"base64url"))).resize(64,64);
-    Jimp.read("background.png", async (err, background) => {
-        if (err) throw err;
-        await background.composite(profile, 70, 30);
-        await background.print(fontsans64, 325, 30, `${login}`);
-        await background.print(fontsans32, 325, 120, status.title);
-        await background.composite(greencircle,170,140);
-        await background.composite(icon,170,140);
-        await background.write("img.png");
-    });
+    setInterval(async () => {
+        var status = await ActiveWindow.getActiveWindow();
+        const icon = (await Jimp.read(Buffer.from(status.icon.split(",")[1],"base64url"))).resize(64,64);    
+        Jimp.read("background.png", async (err, background) => {
+            if (err) throw err;
+            await background.composite(profile, 50, 30);
+            await background.print(fontsans64, 325, 30, `${login}`);
+            await background.print(fontsans32, 325, 120, status.title);
+            await background.composite(greencircle,150,140);
+            await background.composite(icon,240,107);
+            await background.write("img.png");
+        });
+    }, 10000);
+
 
 
     app.get("/mew", async (req, res) => {
@@ -34,7 +37,9 @@ async function main() {
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Methods', 'GET');
         var imagePath = path.join(__dirname, 'img.png');
-        res.sendFile(imagePath);
+        if (fs.readFileSync(imagePath)) {
+            res.sendFile(imagePath);
+        }
     })
 
     app.listen(port, () => {
