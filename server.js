@@ -1,15 +1,19 @@
 const express = require("express");
-const { ActiveWindow } = require("@paymoapp/active-window");
 const Jimp = require("jimp");
 const path = require("path");
 const app = express();
+const dotenv = require("dotenv");
 const port = 3000;
-const fs = require("fs")
-if (!fs.readFileSync(".env")) {
-    
-}
+const env = dotenv.config().parsed;
+const fs = require("fs");
+app.use(express.json({limit: '50mb'}));
 async function main() {
-    
+if (!fs.readFileSync(".env") || !env.key) {
+    console.log("Please make a file called .env and add a key like this: key=akeyhere");
+    process.exit()
+}   
+
+
     var fontsans64 = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
     var fontsans32 = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
     const ghapi = await fetch("https://api.github.com/users/ant-7802");
@@ -19,8 +23,13 @@ async function main() {
     const greencircle = (await Jimp.read(`assets/greencircle.png`)).resize(40,40);
     profile.resize(150, 150);
     profile.circle();
-    setInterval(async () => {
-        var status = await ActiveWindow.getActiveWindow();
+
+    console.log("STARTING NOW!!")
+    app.post("/", async (req,res) => {
+        var body = req.body
+        if (body && body.key && body.key == env.key) { 
+        var status = body.status
+        console.log(body)
         const icon = (await Jimp.read(Buffer.from(status.icon.split(",")[1],"base64url"))).resize(64,64);    
         Jimp.read("background.png", async (err, background) => {
             if (err) throw err;
@@ -30,8 +39,14 @@ async function main() {
             await background.composite(greencircle,130,140);
             await background.composite(icon,177,107);
             await background.write("img.png");
+            res.sendStatus(201);
         });
-    }, 10000);
+        
+    } else {
+        res.sendStatus(403)
+    }
+    });
+       
 
 
 
@@ -45,12 +60,11 @@ async function main() {
         }
     });
 
-    app.get("")
-
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
 
-}
 
+}
 main();
+
