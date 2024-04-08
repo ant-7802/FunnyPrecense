@@ -6,12 +6,14 @@ const dotenv = require("dotenv");
 const port = 3000;
 const env = dotenv.config().parsed;
 const fs = require("fs");
+var timer = 55;
 app.use(express.json({limit: '50mb'}));
 async function main() {
 if (!fs.readFileSync(".env") || !env.key) {
     console.log("Please make a file called .env and add a key like this: key=akeyhere");
     process.exit()
 }   
+
 
 
     var fontsans64 = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
@@ -24,29 +26,46 @@ if (!fs.readFileSync(".env") || !env.key) {
     profile.resize(150, 150);
     profile.circle();
 
-    console.log("STARTING NOW!!")
-    app.post("/", async (req,res) => {
-        var body = req.body
-        if (body && body.key && body.key == env.key) { 
-        var status = body.status
-        console.log(body)
-        const icon = (await Jimp.read(Buffer.from(status.icon.split(",")[1],"base64url"))).resize(64,64);    
-        Jimp.read("background.png", async (err, background) => {
-            if (err) throw err;
-            await background.composite(profile, 30, 30);
-            await background.print(fontsans64, 325, 30, `${login}`);
-            await background.print(fontsans32, 250, 120, status.title);
-            await background.composite(greencircle,130,140);
-            await background.composite(icon,177,107);
-            await background.write("img.png");
-            res.sendStatus(201);
-        });
+    async function imgen(colorcircle,icon,title) {
+        var background = await Jimp.read("assets/background.png")
+        await background.composite(profile, 30, 30);
+        await background.print(fontsans64, 325, 30, `${login}`);
+        await background.print(fontsans32, 290, 120, title);
+        await background.composite(colorcircle,130,140);
+        if (icon) {
+            await background.composite(icon,250,107);
+        }
+        await background.write("img.png");
+    }
+
+    app.post("/submit", async (req,res) => {
+        var headers = req.headers
+        var body = req.body;
+        if (body && headers.key && headers.key == env.key) { 
+            timer = 0;
+            var icon;
+        if (body.enableicon == true) {
+            icon = (await Jimp.read(Buffer.from(body.icon,"base64url"))).resize(64,64);   
+        } else {
+            icon = null;
+        }
+        imgen(greencircle,icon,body.title)
+        res.sendStatus(200);
         
     } else {
         res.sendStatus(403)
     }
     });
        
+
+    setInterval(() => {
+        timer += 1;
+        console.log(timer)
+        if (timer == 60) {
+            console.log("SETTING OFFLINE!")
+            imgen(graycircle,null,"Offline")
+        }
+    }, 1000);
 
 
 
