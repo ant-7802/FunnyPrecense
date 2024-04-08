@@ -27,10 +27,10 @@ if (!fs.readFileSync(".env") || !env.key) {
     profile.circle();
 
     async function imgen(colorcircle,icon,title) {
-        var background = await Jimp.read("assets/background.png")
+        var background = await Jimp.read("assets/background.png");
         await background.composite(profile, 30, 30);
         await background.print(fontsans64, 325, 30, `${login}`);
-        await background.print(fontsans32, 290, 120, title);
+        await background.print(fontsans32, 340, 120, title);
         await background.composite(colorcircle,130,140);
         if (icon) {
             await background.composite(icon,250,107);
@@ -61,7 +61,6 @@ if (!fs.readFileSync(".env") || !env.key) {
     setInterval(() => {
         timer += 1;
         if (timer == 60) {
-            console.log("SETTING OFFLINE!")
             imgen(graycircle,null,"Offline")
         }
     }, 1000);

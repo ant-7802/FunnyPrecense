@@ -42,5 +42,5 @@ async function loop() {
         })
     });
 }
-//loop()
-setInterval(loop, 10000);
+loop()
+//setInterval(loop, 10000);
