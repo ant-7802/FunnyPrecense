@@ -5,6 +5,9 @@ const path = require("path");
 const app = express();
 const port = 3000;
 const fs = require("fs")
+if (!fs.readFileSync(".env")) {
+    
+}
 async function main() {
     
     var fontsans64 = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
@@ -32,7 +35,7 @@ async function main() {
 
 
 
-    app.get("/mew", async (req, res) => {
+    app.get("/status", async (req, res) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Methods', 'GET');
@@ -40,7 +43,9 @@ async function main() {
         if (fs.readFileSync(imagePath)) {
             res.sendFile(imagePath);
         }
-    })
+    });
+
+    app.get("")
 
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
