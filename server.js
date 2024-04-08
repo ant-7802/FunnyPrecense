@@ -60,7 +60,6 @@ if (!fs.readFileSync(".env") || !env.key) {
 
     setInterval(() => {
         timer += 1;
-        console.log(timer)
         if (timer == 60) {
             console.log("SETTING OFFLINE!")
             imgen(graycircle,null,"Offline")
