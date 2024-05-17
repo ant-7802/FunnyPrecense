@@ -1,4 +1,4 @@
-# FunnyPrecense V0.1
+# FunnyPresence V0.1
 
 This lets you set a funny precense on your github profile or whatever lets you set a file image url :D
 
